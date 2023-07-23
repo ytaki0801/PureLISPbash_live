@@ -1,0 +1,1 @@
+(((lambda (u) (u u)) (lambda (u) (lambda (k v) (cond ((eq? v (quote ())) (quote ())) ((eq? (car v) k) (car (cdr v))) (else ((u u) k (cdr (cdr v)))))))) (quote Orange) (quote (Apple 120 Orange 210 Lemon 180)))
