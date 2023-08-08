@@ -1,30 +1,37 @@
+LNUM=0
+
 car () {
-  CARR=${1%% *};
+  CARR=${1%% *}
   if [[ ${CARR} =~ ^[0-9]+$ ]]; then
-    echo ${L[${CARR}]}
-  else
-    echo ${CARR}
+    CARR="${L[${CARR}]}"
+    CARR="${CARR%% *}"
   fi
 }
-cdr () { echo ${1#* }; }
-cons () { echo "${1} ${2}"; }
+cdr () {
+  CDRR="${L[${1}]}"
+  CDRR="${CDRR#* }"
+}
+cons () {
+  if [ "${2}" = "NULL" ]; then
+    L[${LNUM}]="${1} NULL"
+    CONSR="${LNUM}"
+    LNUM="$((LNUM+1))"
+  else
+    L[${2}]="${1} ${L[${2}]}"
+    CONSR="${2}"
+  fi
+}
 
-# (a (x y z) c)
-L[0]="a 1 c NULL"
-L[1]="x y z NULL"
-
-# (car (cdr (car (cdr '(a (x y z) c))))) => y
-#R="${L[0]}"
-#R="$(cdr "${R}")"
-#R="$(car "${R}")"
-#R="$(cdr "${R}")"
-#R="$(car "${R}")"
-#echo ${R}
-
-# (cons 'h (car (cdr '(a (x y z) c))))
-R="${L[0]}"
-R="$(cdr "${R}")"
-R="$(car "${R}")"
-R="$(cons "h" "${R}")"
-echo ${R}
+# (cons 'z (cons 'y (cons 'x '()))) => (z y x)
+cons "x" "NULL"
+cons "y" "${CONSR}"
+cons "z" "${CONSR}"
+# (cons '(z y x) (cons 'a '())) => ((z y x) a)
+R="${CONSR}"
+cons "a" "NULL"
+cons "$R" "${CONSR}"
+# (car (cdr '((z y x) a))) => a
+cdr "${CONSR}"
+car "${CDRR}"
+echo "${CARR}"
 
