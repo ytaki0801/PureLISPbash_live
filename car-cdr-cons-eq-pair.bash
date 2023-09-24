@@ -43,55 +43,51 @@ pair () {
   fi
 }
 
-# (define x '(a b c)) => x: (a b c)
-cons "c" "NULL"
-cons "b" "${CONSR}"
+wrls () {
+  car "${1}"
+  write "${CARR}"
+  cdr "${1}"
+  if [ "${CDRR}" = "NULL" ]; then
+      printf ""
+  else
+      printf " "
+      wrls "${CDRR}"
+  fi
+}
+write () {
+  pair "${1}"
+  if [ "${PAIRR}" = "false" ]; then
+    printf "${1}"
+  else
+    printf "("
+    wrls "${1}"
+    printf ")"
+  fi
+}
+
+# (define x '((a b) c (d e)))
+#   (define x1 (cons a (cons b NULL)))
+cons "b" "NULL"
 cons "a" "${CONSR}"
-X="${CONSR}"
-# (car x) => a
-car "${X}"
-echo "${CARR}"
-# (car (cdr x)) => b
-cdr "${X}"
-car "${CDRR}"
-echo "${CARR}"
-# (define y '(d e f)) => y: (d e f)
-cons "f" "NULL"
-cons "e" "${CONSR}"
+X1="${CONSR}"
+#   (define x2 (cons d (cons e NULL)))
+cons "e" "NULL"
 cons "d" "${CONSR}"
-Y="${CONSR}"
-# (define z (cons x y)) => z: ((a b c) d e f)
-cons "${X}" "${Y}"
-Z="${CONSR}"
-# (car (cdr (car z))) => b
-car "${Z}"
-cdr "${CARR}"
-car "${CDRR}"
-echo "${CARR}"
-# (car (cdr (cdr z))) => e
-cdr "${Z}"
-cdr "${CDRR}"
-car "${CDRR}"
-echo "${CARR}"
-# (eq? (car (cdr (car z))) 'b) => true
-car "${Z}"
-cdr "${CARR}"
-car "${CDRR}"
-eq "${CARR}" "b"
-echo "${EQR}"
-# (eq? (car (cdr (car z))) 'a) => false
-eq "${CARR}" "a"
-echo "${EQR}"
-# (pair? (car z)) => true
-car "${Z}"
-pair "${CARR}"
-echo "${PAIRR}"
-# (pair? (cdr (car z))) => true
-cdr "${CARR}"
-pair "${CDRR}"
-echo "${PAIRR}"
-# (pair? (car (cdr (car z)))) => false
-car "${CDRR}"
-pair "${CARR}"
-echo "${PAIRR}"
+X2="${CONSR}"
+#   (define x (cons x1 (cons 'c (cons x2 NULL))))
+cons "${X2}" "NULL"
+cons "c" "${CONSR}"
+cons "${X1}" "${CONSR}"
+X="${CONSR}"
+# (write x) => "((a b) c (d e))"
+write "${X}"
+echo
+# (write (car x)) => "(a b)"
+car "${X}"
+write "${CARR}"
+echo
+# (write (cdr x)) => "(c (d e))"
+cdr "${X}"
+write "${CDRR}"
+echo
 
